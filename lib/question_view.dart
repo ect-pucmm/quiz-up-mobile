@@ -62,6 +62,7 @@ class QuestionState extends State<Question> {
       print(" [x] ${message.payloadAsString}");
 //    client.close();
       _activateBtn();
+      _startSleep();
     });
   }
 
@@ -87,13 +88,24 @@ class QuestionState extends State<Question> {
     super.initState();
   }
 
-  _onPressed() {
+  void _onPressed() {
     // We dont care about the routing key as our exchange type is FANOUT
     publisher.publish((widget.team+ (new DateTime.now().millisecondsSinceEpoch).toString()  + (new DateTime.now()).toString()), null);
     print("message : " + widget.team);
     print(" [x] Sent ${widget.team}");
 
     _deactivateBtn();
+  }
+
+  void _startSleep(){
+    Future.delayed(const Duration(seconds: 15), () {
+      if(isAvailableBtn){
+        print("Button deactivated");
+        _deactivateBtn();
+      }else {
+        print('button was disabled');
+      }
+    });
   }
 
   @override
